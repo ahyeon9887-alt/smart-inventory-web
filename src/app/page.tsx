@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Navbar, { TabType } from '@/components/Navbar';
@@ -22,11 +22,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDbConnected, setIsDbConnected] = useState(false);
 
-  // 모달 상태
+  // 紐⑤떖 ?곹깭
   const [orderModalItem, setOrderModalItem] = useState<ItemWithCalculations | null>(null);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
-  // 시스템 피드백 알림 배너
+  // ?쒖뒪???쇰뱶諛??뚮┝ 諛곕꼫
   const [toast, setToast] = useState<{
     type: 'success' | 'error' | 'info' | 'warning';
     title: string;
@@ -40,7 +40,7 @@ export default function Home() {
     }, 6000);
   };
 
-  // 1. Supabase 데이터 로드
+  // 1. Supabase ?곗씠??濡쒕뱶
   const loadData = useCallback(async (isInitial = false) => {
     setIsLoading(true);
     try {
@@ -53,7 +53,7 @@ export default function Home() {
 
       setIsDbConnected(true);
 
-      // 만약 Supabase DB에 아직 데이터가 전혀 없다면 초기 예제 데이터를 자동으로 적재
+      // 留뚯빟 Supabase DB???꾩쭅 ?곗씠?곌? ?꾪? ?녿떎硫?珥덇린 ?덉젣 ?곗씠?곕? ?먮룞?쇰줈 ?곸옱
       if (isInitial && dbSuppliers.length === 0 && dbItems.length === 0) {
         console.log('Supabase DB is empty. Loading default IE demo dataset...');
         setSuppliers(initialSuppliers);
@@ -62,8 +62,8 @@ export default function Home() {
         setPurchaseOrders(initialPurchaseOrders);
         showToast(
           'info',
-          'IE 스마트 재고관리 시스템 준비 완료',
-          'Supabase 연결 완료! 시연을 위해 산업공학(IE) 표준 품목 및 거래처 샘플 데이터가 기본 적용되었습니다.'
+          'IE ?ㅻ쭏???ш퀬愿由??쒖뒪??以鍮??꾨즺',
+          'Supabase ?곌껐 ?꾨즺! ?쒖뿰???꾪빐 ?곗뾽怨듯븰(IE) ?쒖? ?덈ぉ 諛?嫄곕옒泥??섑뵆 ?곗씠?곌? 湲곕낯 ?곸슜?섏뿀?듬땲??'
         );
       } else {
         setSuppliers(dbSuppliers);
@@ -74,7 +74,7 @@ export default function Home() {
     } catch (err) {
       console.error('Error fetching Supabase data:', err);
       setIsDbConnected(false);
-      showToast('error', '데이터 로드 실패', 'Supabase에서 데이터를 가져오지 못했습니다.');
+      showToast('error', '?곗씠??濡쒕뱶 ?ㅽ뙣', 'Supabase?먯꽌 ?곗씠?곕? 媛?몄삤吏 紐삵뻽?듬땲??');
     } finally {
       setIsLoading(false);
     }
@@ -84,25 +84,23 @@ export default function Home() {
     loadData(true);
   }, [loadData]);
 
-  // 2. 비즈니스 로직(현재재고, ROP, 발주판정) 계산값 결합
+  // 2. 鍮꾩쫰?덉뒪 濡쒖쭅(?꾩옱?ш퀬, ROP, 諛쒖＜?먯젙) 怨꾩궛媛?寃고빀
   const enrichedItems = useMemo(() => {
     return enrichItemsWithCalculations(items, suppliers, transactions);
   }, [items, suppliers, transactions]);
 
-  // 발주 필요 품목 수
-  const reorderNeededCount = useMemo(() => {
+  // 諛쒖＜ ?꾩슂 ?덈ぉ ??  const reorderNeededCount = useMemo(() => {
     return enrichedItems.filter((i) => i.is_reorder_needed).length;
   }, [enrichedItems]);
 
-  // 3. 샘플 데이터 로드 버튼 핸들러
-  const handleLoadSampleData = async () => {
-    if (confirm('산업공학(IE) 표준 서보모터, 베어링, 센서 등 10개 품목과 5개 거래처 샘플 데이터를 로드하시겠습니까?')) {
+  // 3. ?섑뵆 ?곗씠??濡쒕뱶 踰꾪듉 ?몃뱾??  const handleLoadSampleData = async () => {
+    if (confirm('?곗뾽怨듯븰(IE) ?쒖? ?쒕낫紐⑦꽣, 踰좎뼱留? ?쇱꽌 ??10媛??덈ぉ怨?5媛?嫄곕옒泥??섑뵆 ?곗씠?곕? 濡쒕뱶?섏떆寃좎뒿?덇퉴?')) {
       setSuppliers(initialSuppliers);
       setItems(initialItems);
       setTransactions(initialTransactions);
       setPurchaseOrders(initialPurchaseOrders);
 
-      // Supabase에도 비동기로 배치 저장 시도
+      // Supabase?먮룄 鍮꾨룞湲곕줈 諛곗튂 ????쒕룄
       try {
         await supabase.from('supplier').insert(initialSuppliers);
         await supabase.from('item').insert(initialItems);
@@ -112,19 +110,18 @@ export default function Home() {
         console.warn('Note: Supabase direct batch insert skipped if RLS is restricted:', e);
       }
 
-      showToast('success', '샘플 데이터 로드 완료', 'ABC 분석 및 ROP 발주 알림을 바로 확인할 수 있습니다.');
+      showToast('success', '?섑뵆 ?곗씠??濡쒕뱶 ?꾨즺', 'ABC 遺꾩꽍 諛?ROP 諛쒖＜ ?뚮┝??諛붾줈 ?뺤씤?????덉뒿?덈떎.');
     }
   };
 
-  // 4. 거래처 등록 핸들러
-  const handleAddSupplier = async (suppData: { name: string; contact?: string; lead_time_days: number }): Promise<boolean> => {
+  // 4. 嫄곕옒泥??깅줉 ?몃뱾??  const handleAddSupplier = async (suppData: { name: string; contact?: string; lead_time_days: number }): Promise<boolean> => {
     const { data, error } = await dbService.addSupplier(suppData);
 
     if (error) {
       console.warn('Supabase insert error (likely RLS):', error.message);
-      // RLS 또는 정책 문제 시에도 사용자 경험을 위해 로컬 상태에 즉시 반영
+      // RLS ?먮뒗 ?뺤콉 臾몄젣 ?쒖뿉???ъ슜??寃쏀뿕???꾪빐 濡쒖뺄 ?곹깭??利됱떆 諛섏쁺
       const newSupp: Supplier = {
-        supplier_id: Date.now(),
+        
         name: suppData.name,
         contact: suppData.contact || null,
         lead_time_days: suppData.lead_time_days,
@@ -132,22 +129,21 @@ export default function Home() {
       setSuppliers((prev) => [...prev, newSupp]);
       showToast(
         'warning',
-        '거래처 등록 완료 (로컬 반영)',
-        `거래처 '${suppData.name}'이(가) 등록되었습니다. (Supabase RLS가 활성화된 경우 Supabase SQL Editor에서 'ALTER TABLE supplier DISABLE ROW LEVEL SECURITY;'를 실행하세요.)`
+        '嫄곕옒泥??깅줉 ?꾨즺 (濡쒖뺄 諛섏쁺)',
+        `嫄곕옒泥?'${suppData.name}'??媛) ?깅줉?섏뿀?듬땲?? (Supabase RLS媛 ?쒖꽦?붾맂 寃쎌슦 Supabase SQL Editor?먯꽌 'ALTER TABLE supplier DISABLE ROW LEVEL SECURITY;'瑜??ㅽ뻾?섏꽭??)`
       );
       return true;
     }
 
     if (data) {
       setSuppliers((prev) => [...prev, data]);
-      showToast('success', '거래처 등록 성공', `'${data.name}' 거래처가 Supabase DB에 정상 저장되었습니다.`);
+      showToast('success', '嫄곕옒泥??깅줉 ?깃났', `'${data.name}' 嫄곕옒泥섍? Supabase DB???뺤긽 ??λ릺?덉뒿?덈떎.`);
       return true;
     }
     return false;
   };
 
-  // 5. 품목 등록 핸들러
-  const handleAddItem = async (itemData: {
+  // 5. ?덈ぉ ?깅줉 ?몃뱾??  const handleAddItem = async (itemData: {
     supplier_id: number | null;
     item_code: string;
     name: string;
@@ -163,28 +159,27 @@ export default function Home() {
     if (error) {
       console.warn('Supabase insert item error (likely RLS):', error.message);
       const newItem: Item = {
-        item_id: Date.now(),
+        
         ...itemData,
       };
       setItems((prev) => [...prev, newItem]);
       showToast(
         'warning',
-        '품목 등록 완료 (로컬 반영)',
-        `[${itemData.item_code}] ${itemData.name} 품목이 등록되었습니다.`
+        '?덈ぉ ?깅줉 ?꾨즺 (濡쒖뺄 諛섏쁺)',
+        `[${itemData.item_code}] ${itemData.name} ?덈ぉ???깅줉?섏뿀?듬땲??`
       );
       return true;
     }
 
     if (data) {
       setItems((prev) => [...prev, data]);
-      showToast('success', '품목 등록 성공', `[${data.item_code}] ${data.name} 품목이 Supabase DB에 저장되었습니다.`);
+      showToast('success', '?덈ぉ ?깅줉 ?깃났', `[${data.item_code}] ${data.name} ?덈ぉ??Supabase DB????λ릺?덉뒿?덈떎.`);
       return true;
     }
     return false;
   };
 
-  // 6. 입출고 트랜잭션 등록 핸들러
-  const handleSubmitTransaction = async (
+  // 6. ?낆텧怨??몃옖??뀡 ?깅줉 ?몃뱾??  const handleSubmitTransaction = async (
     itemId: number,
     txType: TxType,
     qty: number,
@@ -204,14 +199,14 @@ export default function Home() {
     if (error) {
       console.warn('Supabase insert stock_tx error (likely RLS):', error.message);
       const localTx: StockTx = {
-        tx_id: Date.now(),
+        
         ...newTxPayload,
       };
       setTransactions((prev) => [localTx, ...prev]);
       showToast(
         'warning',
-        `${txType === 'IN' ? '입고' : '출고'} 등록 완료 (로컬 반영)`,
-        `수량 ${qty.toLocaleString()}개가 처리되어 현재 재고에 즉시 반영되었습니다.`
+        `${txType === 'IN' ? '?낃퀬' : '異쒓퀬'} ?깅줉 ?꾨즺 (濡쒖뺄 諛섏쁺)`,
+        `?섎웾 ${qty.toLocaleString()}媛쒓? 泥섎━?섏뼱 ?꾩옱 ?ш퀬??利됱떆 諛섏쁺?섏뿀?듬땲??`
       );
       return true;
     }
@@ -220,16 +215,15 @@ export default function Home() {
       setTransactions((prev) => [data, ...prev]);
       showToast(
         'success',
-        `${txType === 'IN' ? '입고' : '출고'} 등록 완료`,
-        `Supabase DB(stock_tx)에 기록되었으며 현재 재고가 갱신되었습니다.`
+        `${txType === 'IN' ? '?낃퀬' : '異쒓퀬'} ?깅줉 ?꾨즺`,
+        `Supabase DB(stock_tx)??湲곕줉?섏뿀?쇰ŉ ?꾩옱 ?ш퀬媛 媛깆떊?섏뿀?듬땲??`
       );
       return true;
     }
     return false;
   };
 
-  // 7. 발주 요청(Purchase Order) 등록 핸들러
-  const handleSubmitOrder = async (
+  // 7. 諛쒖＜ ?붿껌(Purchase Order) ?깅줉 ?몃뱾??  const handleSubmitOrder = async (
     itemId: number,
     orderQty: number,
     orderDate: string,
@@ -247,14 +241,14 @@ export default function Home() {
     if (error) {
       console.warn('Supabase insert purchase_order error (likely RLS):', error.message);
       const localPo: PurchaseOrder = {
-        po_id: Date.now(),
+        
         ...newPoPayload,
       };
       setPurchaseOrders((prev) => [localPo, ...prev]);
       showToast(
         'warning',
-        '발주 요청 완료 (로컬 반영)',
-        `수량 ${orderQty.toLocaleString()}건의 발주 요청이 등록되었습니다.`
+        '諛쒖＜ ?붿껌 ?꾨즺 (濡쒖뺄 諛섏쁺)',
+        `?섎웾 ${orderQty.toLocaleString()}嫄댁쓽 諛쒖＜ ?붿껌???깅줉?섏뿀?듬땲??`
       );
       return true;
     }
@@ -263,15 +257,15 @@ export default function Home() {
       setPurchaseOrders((prev) => [data, ...prev]);
       showToast(
         'success',
-        '발주 요청 등록 완료',
-        `Supabase DB(purchase_order)에 발주 데이터가 등록되었습니다.`
+        '諛쒖＜ ?붿껌 ?깅줉 ?꾨즺',
+        `Supabase DB(purchase_order)??諛쒖＜ ?곗씠?곌? ?깅줉?섏뿀?듬땲??`
       );
       return true;
     }
     return false;
   };
 
-  // 발주 모달 열기
+  // 諛쒖＜ 紐⑤떖 ?닿린
   const handleOpenOrderModal = (item: ItemWithCalculations) => {
     setOrderModalItem(item);
     setIsOrderModalOpen(true);
@@ -279,7 +273,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      {/* 글로벌 네비게이션 헤더 */}
+      {/* 湲濡쒕쾶 ?ㅻ퉬寃뚯씠???ㅻ뜑 */}
       <Navbar
         currentTab={currentTab}
         onTabChange={setCurrentTab}
@@ -290,7 +284,7 @@ export default function Home() {
         isDbConnected={isDbConnected}
       />
 
-      {/* 시스템 알림 토스트 */}
+      {/* ?쒖뒪???뚮┝ ?좎뒪??*/}
       {toast && (
         <div className="fixed top-20 right-4 z-50 max-w-md animate-slideIn">
           <div className={`p-4 rounded-2xl shadow-xl border flex items-start space-x-3 ${
@@ -320,7 +314,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* 메인 콘텐츠 영역 */}
+      {/* 硫붿씤 肄섑뀗痢??곸뿭 */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {currentTab === 'inventory' && (
           <TabInventory
@@ -352,7 +346,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* 발주 요청 팝업 모달 */}
+      {/* 諛쒖＜ ?붿껌 ?앹뾽 紐⑤떖 */}
       <OrderModal
         item={orderModalItem}
         isOpen={isOrderModalOpen}
@@ -363,15 +357,16 @@ export default function Home() {
         onSubmit={handleSubmitOrder}
       />
 
-      {/* 푸터 */}
+      {/* ?명꽣 */}
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4">
-          <p className="font-medium text-slate-700">스마트 재고관리 시스템 (Smart Inventory Manager)</p>
+          <p className="font-medium text-slate-700">?ㅻ쭏???ш퀬愿由??쒖뒪??(Smart Inventory Manager)</p>
           <p className="mt-1 text-slate-400">
-            Next.js App Router · TypeScript · Tailwind CSS · Supabase · Vercel Ready
+            Next.js App Router 쨌 TypeScript 쨌 Tailwind CSS 쨌 Supabase 쨌 Vercel Ready
           </p>
         </div>
       </footer>
     </div>
   );
 }
+
